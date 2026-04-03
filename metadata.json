@@ -1,0 +1,5 @@
+{
+  "name": "HUTECH Car Spare Parts Web",
+  "description": "A Node.js/Express application for managing and selling car spare parts, built with EJS and Mongoose.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,103 @@
+<%- include('partials/header-vi') %>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
+        <div class="p-3 rounded-lg bg-blue-50 text-blue-600 mr-4">
+            <i class="fas fa-shopping-bag text-2xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Tổng đơn hàng</p>
+            <h3 class="text-2xl font-bold text-gray-900"><%= stats.totalOrders %></h3>
+            <p class="text-xs text-green-600 mt-1"><i class="fas fa-database mr-1"></i> Dữ liệu thật từ MySQL</p>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
+        <div class="p-3 rounded-lg bg-green-50 text-green-600 mr-4">
+            <i class="fas fa-dollar-sign text-2xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Doanh thu</p>
+            <h3 class="text-2xl font-bold text-gray-900"><%= Number(stats.totalRevenue || 0).toLocaleString('vi-VN') %> đ</h3>
+            <p class="text-xs text-green-600 mt-1"><i class="fas fa-receipt mr-1"></i> Chỉ tính đơn đã giao và hoàn tất</p>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
+        <div class="p-3 rounded-lg bg-purple-50 text-purple-600 mr-4">
+            <i class="fas fa-tools text-2xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Sản phẩm trong kho</p>
+            <h3 class="text-2xl font-bold text-gray-900"><%= stats.totalStock %></h3>
+            <p class="text-xs text-red-600 mt-1"><i class="fas fa-exclamation-triangle mr-1"></i> <%= stats.lowStockParts %> sản phẩm sắp hết</p>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
+        <div class="p-3 rounded-lg bg-yellow-50 text-yellow-600 mr-4">
+            <i class="fas fa-users text-2xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Khách hàng</p>
+            <h3 class="text-2xl font-bold text-gray-900"><%= stats.totalCustomers %></h3>
+            <p class="text-xs text-green-600 mt-1"><i class="fas fa-user-check mr-1"></i> Đang quản lý trong hệ thống</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="font-bold text-gray-900">Đơn hàng gần đây</h3>
+            <a href="/orders" class="text-sm text-blue-600 hover:underline">Xem tất cả</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-semibold">
+                    <tr>
+                        <th class="px-6 py-3">Mã đơn</th>
+                        <th class="px-6 py-3">Khách hàng</th>
+                        <th class="px-6 py-3">Trạng thái</th>
+                        <th class="px-6 py-3">Tổng</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <% recentOrders.forEach(order => { %>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-medium text-blue-600"><%= order.id %></td>
+                            <td class="px-6 py-4 text-sm text-gray-600"><%= order.customer %></td>
+                            <td class="px-6 py-4 text-sm">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium <%= order.status === 'Đã giao' || order.status === 'Hoàn tất' ? 'bg-green-100 text-green-700' : order.status === 'Đang xử lý' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700' %>"><%= order.status %></span>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-bold text-gray-900"><%= Number(order.total || 0).toLocaleString('vi-VN') %> đ</td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="font-bold text-gray-900">Sản phẩm bán chạy</h3>
+            <a href="/parts" class="text-sm text-blue-600 hover:underline">Xem kho</a>
+        </div>
+        <div class="p-6 space-y-4">
+            <% topProducts.forEach(product => { %>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <img src="<%= product.image %>" class="w-10 h-10 rounded-lg mr-3">
+                        <div>
+                            <p class="text-sm font-bold text-gray-900"><%= product.name %></p>
+                            <p class="text-xs text-gray-500">Danh mục: <%= product.category %></p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-gray-900"><%= product.soldCount %> lượt bán</p>
+                        <p class="text-xs text-green-600">Thống kê thật</p>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer-vi') %>

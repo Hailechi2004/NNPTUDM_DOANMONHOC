@@ -1,0 +1,77 @@
+<%- include('partials/header-vi') %>
+
+<div class="mb-6">
+    <a href="/parts" class="text-blue-600 hover:underline flex items-center">
+        <i class="fas fa-arrow-left mr-2"></i> Quay lại danh sách
+    </a>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+        <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
+            <img src="<%= part.image %>" alt="<%= part.name %>" class="w-full h-full object-contain">
+        </div>
+
+        <div class="flex flex-col">
+            <div class="mb-6">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wider">
+                        <%= part.category %>
+                    </span>
+                    <% if (part.showPromotion) { %>
+                        <span class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full">
+                            Đang giảm <%= part.discountPercent %>%
+                        </span>
+                    <% } %>
+                </div>
+
+                <h1 class="text-3xl font-bold text-gray-900 mt-4"><%= part.name %></h1>
+                <div class="flex items-baseline space-x-4 mt-4 flex-wrap">
+                    <p class="text-4xl font-extrabold text-red-600"><%= part.finalPrice.toLocaleString('vi-VN') %> đ</p>
+                    <% if (part.showPromotion) { %>
+                        <p class="text-xl text-gray-400 line-through"><%= part.originalPrice.toLocaleString('vi-VN') %> đ</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <p class="text-xs text-gray-500 uppercase font-bold">Trạng thái kho</p>
+                    <p class="text-lg font-bold <%= part.stock > 5 ? 'text-green-600' : part.stock > 0 ? 'text-amber-600' : 'text-red-600' %>">
+                        <%= part.stock > 0 ? 'Còn hàng (' + part.stock + ')' : 'Hết hàng' %>
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <p class="text-xs text-gray-500 uppercase font-bold">Mã sản phẩm</p>
+                    <p class="text-lg font-bold text-gray-900">SKU-<%= part.id.toString().padStart(4, '0') %></p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <p class="text-xs text-gray-500 uppercase font-bold">Nhà cung cấp</p>
+                    <p class="text-lg font-bold text-gray-900"><%= part.supplier %></p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <p class="text-xs text-gray-500 uppercase font-bold">Mã khuyến mãi</p>
+                    <p class="text-lg font-bold text-gray-900"><%= part.promotionCode || 'Không áp dụng' %></p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Mô tả sản phẩm</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    <%= part.description || 'Chưa có mô tả chi tiết cho sản phẩm này.' %>
+                </p>
+            </div>
+
+            <div class="mt-auto flex space-x-4">
+                <a href="/parts/edit/<%= part.id %>" class="flex-1 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition font-bold text-center">
+                    <i class="fas fa-edit mr-2"></i> Chỉnh sửa thông tin
+                </a>
+                <a href="/parts/delete/<%= part.id %>" onclick="return confirm('Xóa sản phẩm này?')" class="px-6 bg-red-50 text-red-600 py-3 rounded-xl hover:bg-red-600 hover:text-white transition font-bold text-center">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer-vi') %>

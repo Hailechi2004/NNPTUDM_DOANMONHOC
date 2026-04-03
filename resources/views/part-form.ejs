@@ -1,0 +1,68 @@
+<%- include('partials/header') %>
+
+<div class="max-w-3xl mx-auto">
+    <div class="mb-6">
+        <a href="/parts" class="text-blue-600 hover:underline flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-8"><%= title %></h1>
+
+        <form action="<%= action %>" method="GET" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Tên phụ tùng</label>
+                    <input type="text" name="name" value="<%= part.name || '' %>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Danh mục</label>
+                    <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="Lốp" <%= part.category === 'Lốp' ? 'selected' : '' %>>Lốp xe</option>
+                        <option value="Đèn" <%= part.category === 'Đèn' ? 'selected' : '' %>>Đèn pha</option>
+                        <option value="Bugi" <%= part.category === 'Bugi' ? 'selected' : '' %>>Bugi</option>
+                        <option value="Dầu nhớt" <%= part.category === 'Dầu nhớt' ? 'selected' : '' %>>Dầu nhớt</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Giá bán (VNĐ)</label>
+                    <input type="number" name="price" value="<%= part.price || '' %>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Giá khuyến mãi (VNĐ)</label>
+                    <input type="number" name="discountPrice" value="<%= part.discountPrice || '' %>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Để trống nếu không giảm giá">
+                </div>
+                <div class="flex items-center space-x-2 pt-8">
+                    <input type="checkbox" name="hasPromotion" id="hasPromotion" <%= part.hasPromotion ? 'checked' : '' %> class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="hasPromotion" class="text-sm font-bold text-gray-700">Áp dụng khuyến mãi</label>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Số lượng tồn kho</label>
+                    <input type="number" name="stock" value="<%= part.stock || 0 %>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">URL Hình ảnh</label>
+                <input type="text" name="image" value="<%= part.image || 'https://picsum.photos/seed/newpart/400/400' %>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Mô tả chi tiết</label>
+                <textarea name="description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"><%= part.description || '' %></textarea>
+            </div>
+
+            <div class="pt-4 flex space-x-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition font-bold">
+                    Lưu thông tin
+                </button>
+                <a href="/parts" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl hover:bg-gray-200 transition font-bold text-center">
+                    Hủy bỏ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

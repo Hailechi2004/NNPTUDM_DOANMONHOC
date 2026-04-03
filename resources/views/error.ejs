@@ -1,0 +1,12 @@
+<%- include('partials/header-vi') %>
+
+<div class="bg-white shadow rounded-lg p-8 text-center">
+    <h1 class="text-4xl font-extrabold text-red-600 mb-4">Lỗi <%= typeof status !== 'undefined' ? status : '500' %></h1>
+    <p class="text-xl text-gray-600 mb-8"><%= message %></p>
+    <% if (typeof error !== 'undefined' && error.stack) { %>
+        <pre class="text-left bg-gray-100 p-4 rounded overflow-auto max-h-64 text-xs"><%= error.stack %></pre>
+    <% } %>
+    <a href="/" class="inline-block mt-8 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Quay lại trang chủ</a>
+</div>
+
+<%- include('partials/footer-vi') %>

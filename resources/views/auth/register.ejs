@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-stone-100">
+  <div class="mx-auto flex min-h-screen max-w-6xl items-center justify-center p-6">
+    <div class="grid w-full overflow-hidden rounded-[2rem] bg-white shadow-2xl lg:grid-cols-[1.1fr_0.9fr]">
+      <section class="bg-gradient-to-br from-amber-200 via-orange-100 to-white p-8 lg:p-12">
+        <p class="text-sm uppercase tracking-[0.3em] text-stone-600">HUTECH</p>
+        <h1 class="mt-6 text-4xl font-black text-stone-900">Tạo tài khoản khách hàng mới.</h1>
+        <p class="mt-4 max-w-lg text-stone-700">
+          Sau khi đăng ký, hệ thống sẽ lưu tài khoản và hồ sơ khách hàng bằng MySQL thật để phục vụ giỏ hàng, đơn hàng và đánh giá.
+        </p>
+      </section>
+
+      <section class="p-8 lg:p-12">
+        <h2 class="text-3xl font-bold text-stone-900">Đăng ký</h2>
+        <p class="mt-2 text-sm text-stone-500">Thông tin sẽ được kiểm tra bằng express-validator.</p>
+
+        <% if (errorMessage) { %>
+          <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <%= errorMessage %>
+          </div>
+        <% } %>
+
+        <form action="/auth/register" method="POST" class="mt-8 space-y-4">
+          <input type="text" name="username" placeholder="Username" value="<%= formData && formData.username ? formData.username : '' %>" class="w-full rounded-2xl border border-stone-300 px-4 py-3 outline-none focus:border-orange-400" required>
+          <input type="text" name="fullName" placeholder="Họ và tên" value="<%= formData && formData.fullName ? formData.fullName : '' %>" class="w-full rounded-2xl border border-stone-300 px-4 py-3 outline-none focus:border-orange-400" required>
+          <input type="email" name="email" placeholder="Email" value="<%= formData && formData.email ? formData.email : '' %>" class="w-full rounded-2xl border border-stone-300 px-4 py-3 outline-none focus:border-orange-400" required>
+          <input type="text" name="phone" placeholder="Số điện thoại" value="<%= formData && formData.phone ? formData.phone : '' %>" class="w-full rounded-2xl border border-stone-300 px-4 py-3 outline-none focus:border-orange-400">
+          <input type="text" name="address" placeholder="Địa chỉ" value="<%= formData && formData.address ? formData.address : '' %>" class="w-full rounded-2xl border border-stone-300 px-4 py-3 outline-none focus:border-orange-400">
+          <input type="password" name="password" placeholder="Mật khẩu" class="w-full rounded-2xl border border-stone-300 px-4 py-3 outline-none focus:border-orange-400" required>
+          <input type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu" class="w-full rounded-2xl border border-stone-300 px-4 py-3 outline-none focus:border-orange-400" required>
+          <button type="submit" class="w-full rounded-2xl bg-stone-900 px-4 py-3 font-semibold text-white transition hover:bg-stone-700">Tạo tài khoản</button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-stone-500">
+          Đã có tài khoản?
+          <a href="/auth/login" class="font-semibold text-stone-900">Đăng nhập</a>
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<%- include('partials/header-vi') %>
+
+<div class="max-w-3xl mx-auto">
+    <div class="mb-6">
+        <a href="/parts" class="text-blue-600 hover:underline flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-8"><%= title %></h1>
+
+        <% if (errorMessage) { %>
+            <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700 font-medium">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+
+        <form action="<%= action %>" method="GET" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Tên phụ tùng</label>
+                    <input type="text" name="name" value="<%= part.name || '' %>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Danh mục</label>
+                    <select name="categoryId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category.id %>" <%= String(part.categoryId || '') === String(category.id) ? 'selected' : '' %>><%= category.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Giá bán (VND)</label>
+                    <input type="number" id="price" name="price" value="<%= part.price || '' %>" min="0" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Giá khuyến mãi (VND)</label>
+                    <input type="number" id="discountPrice" name="discountPrice" value="<%= part.discountPrice || '' %>" min="0" max="<%= part.price || '' %>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="De trong neu khong giam gia">
+                    <p class="text-xs text-gray-500 mt-2">Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc. Nếu bằng giá gốc, hệ thống sẽ xem như không giảm giá.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Nhà cung cấp</label>
+                    <select name="supplierId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="">Chọn nhà cung cấp</option>
+                        <% suppliers.forEach(supplier => { %>
+                            <option value="<%= supplier.id %>" <%= String(part.supplierId || '') === String(supplier.id) ? 'selected' : '' %>><%= supplier.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Số lượng tồn kho</label>
+                    <input type="number" name="stock" value="<%= part.stock || 0 %>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex items-center space-x-2 pt-8">
+                    <input type="checkbox" name="hasPromotion" id="hasPromotion" <%= part.hasPromotion ? 'checked' : '' %> class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="hasPromotion" class="text-sm font-bold text-gray-700">Áp dụng khuyến mãi</label>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Mã khuyến mãi</label>
+                    <select name="promotionId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="">Không áp mã / Hủy mã</option>
+                        <% promotions.forEach(promotion => { %>
+                            <option value="<%= promotion.id %>" <%= String(part.promotionId || '') === String(promotion.id) ? 'selected' : '' %>><%= promotion.code %> - <%= promotion.discount_type === 'Percentage' ? promotion.discount_value + '%' : Number(promotion.discount_value).toLocaleString('vi-VN') + ' đ' %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">URL hình ảnh</label>
+                <input type="text" name="image" value="<%= part.image || 'https://picsum.photos/seed/newpart/400/400' %>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Mô tả chi tiết</label>
+                <textarea name="description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"><%= part.description || '' %></textarea>
+            </div>
+
+            <div class="pt-4 flex space-x-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition font-bold">
+                    Lưu thông tin
+                </button>
+                <a href="/parts" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl hover:bg-gray-200 transition font-bold text-center">
+                    Hủy bỏ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const priceInput = document.getElementById('price');
+    const discountInput = document.getElementById('discountPrice');
+
+    function syncDiscountLimit() {
+        if (!priceInput || !discountInput) {
+            return;
+        }
+
+        const priceValue = Number(priceInput.value || 0);
+        if (priceValue > 0) {
+            discountInput.max = String(priceValue);
+        }
+    }
+
+    if (priceInput && discountInput) {
+        syncDiscountLimit();
+        priceInput.addEventListener('input', syncDiscountLimit);
+    }
+</script>
+
+<%- include('partials/footer-vi') %>

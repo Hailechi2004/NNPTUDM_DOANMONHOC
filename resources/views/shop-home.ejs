@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <% const authUser = locals.authUser || null; %>
+    <% const isCustomer = authUser && authUser.role === 'Customer'; %>
+
+    <% if (isPreviewMode) { %>
+        <div class="bg-amber-300 text-amber-950 py-2 text-center text-sm font-bold shadow-sm">
+            <i class="fas fa-eye mr-2"></i>
+            Chế độ xem trước giao diện khách hàng -
+            <a href="/" class="underline">Quay lại trang chính</a>
+        </div>
+    <% } %>
+
+    <nav class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="h-20 flex items-center justify-between gap-6">
+                <a href="/" class="text-2xl font-black tracking-tight text-blue-700">
+                    HUTECH<span class="text-slate-900">PARTS</span>
+                </a>
+
+                <div class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-600">
+                    <a href="/" class="hover:text-blue-700 transition">Trang chủ</a>
+                    <a href="<%= currentPath %>" class="text-blue-700">Cửa hàng</a>
+                    <a href="/shop/orders" class="hover:text-blue-700 transition">Đơn hàng</a>
+                    <a href="#lien-he" class="hover:text-blue-700 transition">Liên hệ</a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <a href="/shop/cart" class="relative px-4 py-2 rounded-full border border-slate-200 text-slate-700 hover:border-blue-500 hover:text-blue-700 transition">
+                        <i class="fas fa-shopping-cart mr-2"></i>Giỏ hàng
+                        <span class="ml-2 inline-flex min-w-6 h-6 items-center justify-center rounded-full bg-red-500 px-2 text-xs font-bold text-white"><%= cartCount || 0 %></span>
+                    </a>
+
+                    <% if (!authUser) { %>
+                        <a href="/auth/login" class="px-4 py-2 rounded-full font-bold text-slate-700 hover:text-blue-700 transition">Đăng nhập</a>
+                        <a href="/auth/register" class="px-5 py-2.5 rounded-full bg-blue-700 text-white font-bold hover:bg-blue-800 transition">Đăng ký</a>
+                    <% } else { %>
+                        <div class="hidden sm:block text-right">
+                            <p class="text-sm font-bold text-slate-900"><%= authUser.fullName || authUser.username %></p>
+                            <p class="text-xs text-slate-500"><%= authUser.role %></p>
+                        </div>
+                        <form action="/auth/logout" method="POST">
+                            <button type="submit" class="px-4 py-2 rounded-full border border-slate-200 text-slate-700 hover:border-red-300 hover:text-red-600 transition">
+                                Đăng xuất
+                            </button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-gradient-to-r from-blue-700 via-blue-600 to-cyan-500 text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+            <div class="max-w-3xl">
+                <p class="uppercase tracking-[0.3em] text-blue-100 text-xs font-black mb-4">Phụ tùng ô tô chính hãng</p>
+                <h1 class="text-4xl md:text-5xl font-black leading-tight mb-5">
+                    Cửa hàng phụ tùng dành cho người dùng Việt
+                </h1>
+                <p class="text-blue-50 text-lg leading-8 max-w-2xl">
+                    Xem sản phẩm, thêm vào giỏ hàng và đặt mua trực tiếp bằng dữ liệu MySQL thật.
+                    Giao diện vẫn giữ đúng tinh thần shop bạn đã thiết kế.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="<%= currentPath %>#san-pham" class="px-7 py-3 rounded-2xl bg-white text-blue-700 font-black hover:bg-slate-100 transition">Xem sản phẩm</a>
+                    <a href="#lien-he" class="px-7 py-3 rounded-2xl border border-white/30 text-white font-black hover:bg-white/10 transition">Liên hệ ngay</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="san-pham" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-8">
+            <aside class="space-y-6">
+                <form action="<%= currentPath %>" method="GET" class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                    <div>
+                        <label class="text-sm font-bold text-slate-700 block mb-2">Tìm sản phẩm</label>
+                        <input type="text" name="search" value="<%= currentSearch || '' %>" placeholder="Tên phụ tùng, danh mục..." class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500">
+                    </div>
+
+                    <div class="mt-5">
+                        <label class="text-sm font-bold text-slate-700 block mb-2">Danh mục</label>
+                        <select name="category" class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500">
+                            <option value="">Tất cả danh mục</option>
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category.id %>" <%= String(currentCategoryId || '') === String(category.id) ? 'selected' : '' %>><%= category.name %> (<%= category.count %>)</option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="mt-5">
+                        <label class="text-sm font-bold text-slate-700 block mb-2">Sắp xếp</label>
+                        <select name="sort" class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500">
+                            <option value="newest" <%= currentSort === 'newest' ? 'selected' : '' %>>Mới nhất</option>
+                            <option value="price-asc" <%= currentSort === 'price-asc' ? 'selected' : '' %>>Giá thấp đến cao</option>
+                            <option value="price-desc" <%= currentSort === 'price-desc' ? 'selected' : '' %>>Giá cao đến thấp</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-6 flex gap-3">
+                        <button type="submit" class="flex-1 rounded-2xl bg-blue-700 px-4 py-3 text-white font-bold hover:bg-blue-800 transition">Lọc ngay</button>
+                        <a href="<%= currentPath %>" class="rounded-2xl bg-slate-100 px-4 py-3 text-slate-700 font-bold hover:bg-slate-200 transition">Đặt lại</a>
+                    </div>
+                </form>
+
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="text-sm font-black uppercase tracking-[0.25em] text-slate-900 mb-4">Liên hệ</h3>
+                    <p class="text-slate-600 leading-7">lechihai97@gmail.com</p>
+                    <p class="text-slate-600 leading-7">03355xx135</p>
+                </div>
+            </aside>
+
+            <section>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                    <div>
+                        <p class="text-slate-500 font-medium">Hiển thị <span class="font-black text-slate-900"><%= parts.length %></span> sản phẩm</p>
+                        <% if (currentSearch) { %>
+                            <p class="text-sm text-slate-500 mt-1">Từ khóa: <span class="font-semibold text-slate-800"><%= currentSearch %></span></p>
+                        <% } %>
+                    </div>
+                    <% if (isPreviewMode) { %>
+                        <div class="rounded-2xl bg-blue-50 text-blue-700 px-4 py-3 text-sm font-semibold">
+                            Đây là giao diện khách xem shop từ trang quản trị
+                        </div>
+                    <% } %>
+                </div>
+
+                <% if (parts.length === 0) { %>
+                    <div class="bg-white border border-dashed border-slate-300 rounded-3xl p-10 text-center text-slate-500">
+                        Không tìm thấy sản phẩm phù hợp.
+                    </div>
+                <% } else { %>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-7">
+                        <% parts.forEach(part => { %>
+                            <article class="bg-white rounded-[28px] border border-slate-200 overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-xl transition duration-300 h-full flex flex-col">
+                                <a href="/shop/product/<%= part.id %>" class="block relative bg-slate-100">
+                                    <img src="<%= part.image %>" alt="<%= part.name %>" class="w-full h-64 object-cover">
+                                    <div class="absolute top-4 right-4">
+                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-black <%= part.stock > 5 ? 'bg-white text-green-700' : part.stock > 0 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700' %>">
+                                            <%= part.stock > 0 ? `Kho: ${part.stock}` : 'Hết hàng' %>
+                                        </span>
+                                    </div>
+                                    <div class="absolute top-4 left-4">
+                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider <%= part.showPromotion ? 'bg-red-600 text-white' : 'bg-blue-700 text-white' %>">
+                                            <%= part.showPromotion ? 'Giảm giá' : 'Nổi bật' %>
+                                        </span>
+                                    </div>
+                                </a>
+
+                                <div class="p-6 flex flex-1 flex-col">
+                                    <p class="text-[11px] font-black uppercase tracking-[0.25em] text-blue-700 mb-2"><%= part.category %></p>
+                                    <a href="/shop/product/<%= part.id %>" class="block">
+                                        <h3 class="text-xl font-black text-slate-900 hover:text-blue-700 transition"><%= part.name %></h3>
+                                    </a>
+                                    <p class="text-sm text-slate-500 mt-2"><%= part.description || 'Phụ tùng chính hãng, sẵn sàng giao nhanh toàn quốc.' %></p>
+
+                                    <div class="mt-5">
+                                        <% if (part.showPromotion) { %>
+                                            <p class="text-sm text-slate-400 line-through"><%= part.originalPrice.toLocaleString('vi-VN') %> đ</p>
+                                            <div class="flex items-center gap-3">
+                                                <p class="text-3xl font-black text-red-600"><%= part.finalPrice.toLocaleString('vi-VN') %> đ</p>
+                                                <span class="rounded-full bg-red-50 px-3 py-1 text-xs font-black text-red-600">-<%= part.discountPercent %>%</span>
+                                            </div>
+                                        <% } else { %>
+                                            <p class="text-3xl font-black text-slate-900"><%= part.finalPrice.toLocaleString('vi-VN') %> đ</p>
+                                        <% } %>
+                                    </div>
+
+                                    <div class="mt-auto pt-6 grid grid-cols-2 gap-3">
+                                        <a href="/shop/product/<%= part.id %>" class="rounded-2xl bg-slate-100 px-4 py-3 text-center font-bold text-slate-700 hover:bg-slate-200 transition">Chi tiết</a>
+
+                                        <% if (isCustomer && part.stock > 0) { %>
+                                            <form action="/shop/cart/add/<%= part.id %>" method="POST">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="w-full rounded-2xl bg-blue-700 px-4 py-3 font-bold text-white hover:bg-blue-800 transition">Thêm giỏ</button>
+                                            </form>
+                                        <% } else if (!authUser) { %>
+                                            <a href="/auth/login" class="rounded-2xl bg-blue-700 px-4 py-3 text-center font-bold text-white hover:bg-blue-800 transition">Đăng nhập</a>
+                                        <% } else { %>
+                                            <a href="/shop/product/<%= part.id %>" class="rounded-2xl bg-blue-700 px-4 py-3 text-center font-bold text-white hover:bg-blue-800 transition">Xem ngay</a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </article>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </section>
+        </div>
+    </main>
+
+    <footer id="lien-he" class="bg-slate-950 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div>
+                    <p class="text-3xl font-black text-blue-400 mb-4">HUTECH<span class="text-white">PARTS</span></p>
+                    <p class="text-slate-400 leading-7">
+                        Chuyên cung cấp phụ tùng ô tô chính hãng, dữ liệu thật từ MySQL và sẵn sàng mở rộng theo đúng cấu trúc thầy dạy.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black mb-4">Liên kết nhanh</h3>
+                    <div class="space-y-3 text-slate-400">
+                        <a href="/" class="block hover:text-white transition">Trang chủ</a>
+                        <a href="/shop/cart" class="block hover:text-white transition">Giỏ hàng</a>
+                        <a href="/shop/orders" class="block hover:text-white transition">Đơn hàng của tôi</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black mb-4">Liên hệ</h3>
+                    <p class="text-slate-400 leading-7">lechihai97@gmail.com</p>
+                    <p class="text-slate-400 leading-7">03355xx135</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

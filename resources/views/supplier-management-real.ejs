@@ -1,0 +1,37 @@
+<%- include('partials/header-vi') %>
+
+<div class="bg-white shadow-sm border rounded-xl overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="font-bold text-gray-900">Danh sach nha cung cap</h3>
+        <a href="/suppliers/add" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">Them nha cung cap</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-semibold">
+                <tr>
+                    <th class="px-6 py-3">Ten nha cung cap</th>
+                    <th class="px-6 py-3">Lien he</th>
+                    <th class="px-6 py-3">Email</th>
+                    <th class="px-6 py-3">Dia chi</th>
+                    <th class="px-6 py-3 text-right">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <% suppliers.forEach(sup => { %>
+                    <tr>
+                        <td class="px-6 py-4 text-sm font-bold text-gray-900"><%= sup.name %></td>
+                        <td class="px-6 py-4 text-sm text-gray-600"><%= sup.contact %></td>
+                        <td class="px-6 py-4 text-sm text-gray-600"><%= sup.email %></td>
+                        <td class="px-6 py-4 text-sm text-gray-600"><%= sup.address %></td>
+                        <td class="px-6 py-4 text-right text-sm font-medium">
+                            <a href="/suppliers/edit/<%= sup.id %>" class="text-blue-600 hover:text-blue-900 mr-3">Sua</a>
+                            <a href="/suppliers/delete/<%= sup.id %>" onclick="return confirm('Xoa nha cung cap nay?')" class="text-red-600 hover:text-red-900">Xoa</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/footer-vi') %>

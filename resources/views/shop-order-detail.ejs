@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex items-center justify-between gap-4 mb-8">
+            <a href="/shop/orders" class="inline-flex items-center text-blue-700 font-bold hover:underline">
+                <i class="fas fa-arrow-left mr-2"></i>Quay lại danh sách đơn hàng
+            </a>
+            <a href="/shop/cart" class="inline-flex items-center rounded-full border border-slate-200 px-4 py-2 font-bold text-slate-700 hover:border-blue-500 hover:text-blue-700 transition">
+                <i class="fas fa-shopping-cart mr-2"></i>Giỏ hàng (<%= cartCount || 0 %>)
+            </a>
+        </div>
+
+        <div class="bg-white rounded-[28px] border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-200 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-2xl font-black text-slate-900"><%= order.id %></h1>
+                    <p class="text-sm text-slate-500">Ngày đặt: <%= order.orderDate %></p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-500">Tổng tiền</p>
+                    <p class="text-2xl font-black text-red-600"><%= order.totalAmount.toLocaleString('vi-VN') %> đ</p>
+                </div>
+            </div>
+
+            <div class="px-6 py-5 border-b border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-slate-400 font-bold mb-2">Trạng thái</p>
+                    <span class="inline-flex rounded-full px-3 py-1 text-sm font-black <%= order.status === 'Đã giao' || order.status === 'Hoàn tất' ? 'bg-green-100 text-green-700' : order.status === 'Đã hủy' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700' %>"><%= order.status %></span>
+                </div>
+                <div class="md:col-span-2">
+                    <p class="text-xs uppercase tracking-[0.2em] text-slate-400 font-bold mb-2">Địa chỉ giao hàng</p>
+                    <p class="text-slate-700"><%= order.shippingAddress || 'Chưa cập nhật' %></p>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <% order.items.forEach(item => { %>
+                    <article class="rounded-3xl border border-slate-200 p-5">
+                        <div class="grid grid-cols-1 md:grid-cols-[120px_minmax(0,1fr)_180px] gap-5 items-center">
+                            <img src="<%= item.image %>" alt="<%= item.name %>" class="w-full h-28 rounded-2xl object-cover bg-slate-100">
+                            <div>
+                                <h3 class="text-xl font-black text-slate-900"><%= item.name %></h3>
+                                <p class="text-sm text-slate-500 mt-2">Số lượng: <span class="font-bold"><%= item.quantity %></span></p>
+                                <% if (item.originalUnitPrice) { %>
+                                    <p class="text-sm text-slate-400 line-through">Giá trước áp mã: <%= item.originalUnitPrice.toLocaleString('vi-VN') %> đ</p>
+                                    <p class="text-sm text-slate-500">Đơn giá sau giảm: <span class="font-bold text-red-600"><%= item.unitPrice.toLocaleString('vi-VN') %> đ</span></p>
+                                <% } else { %>
+                                    <p class="text-sm text-slate-500">Đơn giá: <span class="font-bold"><%= item.unitPrice.toLocaleString('vi-VN') %> đ</span></p>
+                                <% } %>
+                                <% if (item.promotionCode) { %>
+                                    <p class="mt-2 inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">Mã đã áp: <%= item.promotionCode %></p>
+                                <% } %>
+                                <% if (item.discountAmount > 0) { %>
+                                    <p class="text-sm text-amber-700 mt-2">Giảm theo mã/khuyến mãi: <%= item.discountAmount.toLocaleString('vi-VN') %> đ</p>
+                                <% } %>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-slate-500">Thành tiền</p>
+                                <p class="text-2xl font-black text-slate-900"><%= item.lineTotal.toLocaleString('vi-VN') %> đ</p>
+                            </div>
+                        </div>
+                    </article>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
