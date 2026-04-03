@@ -17,7 +17,7 @@ const shopRouter = require('./routes/shop-real');
 
 const app = express();
 
-// View engine setup
+
 app.set('views', path.join(__dirname, 'resources/views'));
 app.set('view engine', 'ejs');
 
