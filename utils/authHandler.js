@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { sendError } = require('./apiResponse');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'HUTECH';
 
@@ -43,13 +44,7 @@ function checkLogin(req, res, next) {
     return next();
   }
 
-  if (isHtmlRequest(req)) {
-    return res.redirect('/auth/login');
-  }
-
-  return res.status(401).send({
-    message: 'Ban chua dang nhap',
-  });
+  return sendError(res, 401, 'Authentication required');
 }
 
 function checkRole(...requiredRoles) {
@@ -59,29 +54,32 @@ function checkRole(...requiredRoles) {
       return next();
     }
 
-    if (isHtmlRequest(req)) {
-      return res.status(403).render('error', {
-        title: 'Forbidden',
-        message: 'Ban khong co quyen truy cap trang nay',
-        error: {},
-      });
-    }
-
-    return res.status(403).send({
-      message: 'Ban khong co quyen',
-    });
+    return sendError(res, 403, 'Forbidden');
   };
 }
 
 function guestOnly(req, res, next) {
   if (req.authUser) {
-    return res.redirect('/');
+    return sendError(res, 400, 'You are already authenticated');
   }
+  return next();
+}
+
+function checkActiveUser(req, res, next) {
+  if (!req.authUser) {
+    return sendError(res, 401, 'Authentication required');
+  }
+
+  if (req.authUser.status && req.authUser.status !== 'Active') {
+    return sendError(res, 403, 'Account is inactive');
+  }
+
   return next();
 }
 
 module.exports = {
   attachUserFromToken,
+  checkActiveUser,
   checkLogin,
   checkRole,
   getTokenFromRequest,

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minh hoa kien truc he thong</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --line: #cfd8e3;
+      --text: #162033;
+      --muted: #607089;
+      --blue: #1d4ed8;
+      --blue-soft: #dbeafe;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --rose: #be123c;
+      --rose-soft: #ffe4e6;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(29, 78, 216, 0.12), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(21, 128, 61, 0.10), transparent 24%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a 60%, #0ea5e9);
+      color: #fff;
+      border-radius: 28px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.86);
+      max-width: 900px;
+      line-height: 1.7;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .legend span {
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .legend .client { background: rgba(255,255,255,0.14); }
+    .legend .server { background: rgba(219,234,254,0.22); }
+    .legend .service { background: rgba(220,252,231,0.18); }
+    .legend .db { background: rgba(254,243,199,0.22); }
+
+    .diagram {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(220px, 1fr));
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .column {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .column-title {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      padding-left: 4px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .card h2, .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .card h3 {
+      font-size: 17px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .client-card .tag { background: var(--blue-soft); color: var(--blue); }
+    .server-card .tag { background: var(--blue-soft); color: var(--blue); }
+    .service-card .tag { background: var(--green-soft); color: var(--green); }
+    .db-card .tag { background: var(--amber-soft); color: var(--amber); }
+    .security-card .tag { background: var(--rose-soft); color: var(--rose); }
+
+    .card p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
+
+    li {
+      margin: 7px 0;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .flow {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .step {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      min-height: 120px;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .footer-note {
+      margin-top: 26px;
+      background: #fff;
+      border: 1px dashed var(--line);
+      border-radius: 20px;
+      padding: 18px 20px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1200px) {
+      .diagram {
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
+      }
+
+      .flow {
+        grid-template-columns: repeat(3, minmax(160px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 18px 14px 40px;
+      }
+
+      .hero {
+        padding: 22px 20px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .diagram,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Kien truc he thong website quan ly va ban phu tung o to</h1>
+      <p>
+        So do nay minh hoa kien truc thuc te cua project: nguoi dung thao tac tren giao dien EJS/HTML,
+        request di qua Express Router, xu ly nghiep vu tai Controller va Utility, sau do truy van MySQL.
+        He thong co phan quyen theo vai tro Admin, Staff, Customer va ho tro ca khu vuc quan tri lan shop online.
+      </p>
+      <div class="legend">
+        <span class="client">Tang nguoi dung</span>
+        <span class="server">Tang web server</span>
+        <span class="service">Tang nghiep vu</span>
+        <span class="db">Tang du lieu</span>
+      </div>
+    </section>
+
+    <section class="diagram">
+      <div class="column">
+        <div class="column-title">Tang 1</div>
+        <article class="card client-card">
+          <div class="tag">Client Layer</div>
+          <h2>Nguoi dung va giao dien</h2>
+          <p>Day la diem bat dau cua he thong, gom ca nguoi quan tri noi bo va khach hang mua hang.</p>
+          <ul>
+            <li>Admin: quan ly user, dashboard</li>
+            <li>Staff: quan ly phu tung, don hang, danh muc</li>
+            <li>Customer: xem shop, gio hang, dat hang</li>
+            <li>View Engine: EJS render HTML tren server</li>
+            <li>Static Assets: anh upload, CSS, giao dien minh hoa</li>
+          </ul>
+        </article>
+
+        <article class="card security-card">
+          <div class="tag">Security</div>
+          <h3>Xac thuc va phan quyen</h3>
+          <ul>
+            <li>JWT luu trong cookie</li>
+            <li>Middleware gan thong tin nguoi dung</li>
+            <li>Phan quyen theo Admin, Staff, Customer</li>
+            <li>Chan truy cap trai vai tro</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="column">
+        <div class="column-title">Tang 2</div>
+        <article class="card server-card">
+          <div class="tag">Web Layer</div>
+          <h2>Express Application</h2>
+          <p>Server trung tam tiep nhan request, parse du lieu, goi route va render response cho giao dien.</p>
+          <ul>
+            <li><code>app.js</code> cau hinh toan bo ung dung</li>
+            <li>Middleware: logger, json, form, cookie</li>
+            <li>Static route cho <code>/uploads</code> va <code>resources/static</code></li>
+            <li>Error handler xu ly loi tap trung</li>
+          </ul>
+        </article>
+
+        <article class="card server-card">
+          <div class="tag">Routing</div>
+          <h3>Cac nhom route chinh</h3>
+          <ul>
+            <li><code>/auth</code>: dang nhap, dang ky, dang xuat</li>
+            <li><code>/parts</code>: quan ly phu tung</li>
+            <li><code>/orders</code>: quan ly don hang</li>
+            <li><code>/categories</code>, <code>/suppliers</code>, <code>/promotions</code></li>
+            <li><code>/shop</code>: khu vuc mua hang</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="column">
+        <div class="column-title">Tang 3</div>
+        <article class="card service-card">
+          <div class="tag">Business Layer</div>
+          <h2>Controller xu ly nghiep vu</h2>
+          <p>Moi controller phu trach mot module chuc nang va chua logic nghiep vu cua he thong.</p>
+          <ul>
+            <li>Auth Controller</li>
+            <li>Parts Controller</li>
+            <li>Orders Controller</li>
+            <li>Shop Controller</li>
+            <li>Dashboard Controller</li>
+            <li>Categories, Suppliers, Promotions, Users</li>
+          </ul>
+        </article>
+
+        <article class="card service-card">
+          <div class="tag">Nghiep vu noi bat</div>
+          <h3>Xu ly mua hang</h3>
+          <ul>
+            <li>Tim kiem va loc phu tung</li>
+            <li>Them vao gio hang</li>
+            <li>Ap ma khuyen mai theo san pham</li>
+            <li>Checkout va tao don hang</li>
+            <li>Cap nhat ton kho sau dat hang</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="column">
+        <div class="column-title">Tang 4</div>
+        <article class="card service-card">
+          <div class="tag">Utility Layer</div>
+          <h2>Module ho tro</h2>
+          <p>Day la tang dung chung cho xac thuc, ket noi CSDL, validate du lieu va upload file.</p>
+          <ul>
+            <li><code>db.js</code>: ket noi MySQL</li>
+            <li><code>authHandler.js</code>: middleware dang nhap</li>
+            <li><code>validationHandler.js</code>: kiem tra du lieu</li>
+            <li><code>uploadHandler.js</code>: upload anh bang Multer</li>
+            <li><code>dbMigration.js</code>: bo sung schema khi can</li>
+          </ul>
+        </article>
+
+        <article class="card service-card">
+          <div class="tag">Data Processing</div>
+          <h3>Quy tac xu ly</h3>
+          <ul>
+            <li>Kiem tra tinh hop le du lieu dau vao</li>
+            <li>Phan tich vai tro nguoi dung</li>
+            <li>Thuc hien transaction khi checkout</li>
+            <li>Render giao dien hoac tra loi loi</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="column">
+        <div class="column-title">Tang 5</div>
+        <article class="card db-card">
+          <div class="tag">Database Layer</div>
+          <h2>MySQL Database</h2>
+          <p>Co so du lieu quan he luu toan bo du lieu van hanh cua he thong ban phu tung.</p>
+          <ul>
+            <li>Users, Roles, Customers</li>
+            <li>Categories, Suppliers, Parts, Promotions</li>
+            <li>Carts, Cart Items</li>
+            <li>Orders, Order Details</li>
+            <li>Reviews</li>
+          </ul>
+        </article>
+
+        <article class="card db-card">
+          <div class="tag">Data Output</div>
+          <h3>Du lieu phan hoi</h3>
+          <ul>
+            <li>Trang giao dien EJS da render</li>
+            <li>Danh sach san pham va chi tiet san pham</li>
+            <li>Thong tin gio hang, don hang</li>
+            <li>Thong ke dashboard</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="flow">
+      <article class="step">
+        <strong>Buoc 1</strong>
+        <p>Nguoi dung truy cap he thong qua trinh duyet va gui yeu cau den website.</p>
+      </article>
+      <article class="step">
+        <strong>Buoc 2</strong>
+        <p>Express nhan request, middleware kiem tra cookie, du lieu form va quyen truy cap.</p>
+      </article>
+      <article class="step">
+        <strong>Buoc 3</strong>
+        <p>Router chuyen huong request den controller phu hop voi tung module chuc nang.</p>
+      </article>
+      <article class="step">
+        <strong>Buoc 4</strong>
+        <p>Controller xu ly nghiep vu, ket hop cac utility de validate, upload va tinh toan.</p>
+      </article>
+      <article class="step">
+        <strong>Buoc 5</strong>
+        <p>He thong truy van MySQL de doc, ghi, cap nhat thong tin san pham, gio hang va don hang.</p>
+      </article>
+      <article class="step">
+        <strong>Buoc 6</strong>
+        <p>Ket qua duoc render thanh giao dien EJS de tra ve cho nguoi dung tren trinh duyet.</p>
+      </article>
+    </section>
+
+    <div class="footer-note">
+      <strong>Goi y dua vao bao cao:</strong> Ban co the chup man hinh trang nay va dat ten hinh la
+      "So do kien truc he thong website quan ly va ban phu tung o to". Neu can, co the mo ta ngan gon:
+      he thong duoc xay dung theo kien truc web nhieu tang, trong do giao dien nguoi dung gui yeu cau den
+      Express server, server xu ly thong qua route, controller va utility, sau do truy van co so du lieu
+      MySQL va tra ket qua ve giao dien.
+    </div>
+  </div>
+</body>
+</html>

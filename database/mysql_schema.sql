@@ -41,6 +41,18 @@ CREATE TABLE suppliers (
   address VARCHAR(255) NULL
 ) ENGINE=InnoDB;
 
+CREATE TABLE promotions (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(50) NOT NULL UNIQUE,
+  discount_type ENUM('Percentage', 'FixedAmount') NOT NULL,
+  discount_value DECIMAL(12,2) NOT NULL,
+  description TEXT NULL,
+  start_date DATETIME NULL,
+  end_date DATETIME NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  CONSTRAINT chk_promotions_discount_value CHECK (discount_value >= 0)
+) ENGINE=InnoDB;
+
 CREATE TABLE parts (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(150) NOT NULL,
@@ -84,18 +96,6 @@ CREATE TABLE customers (
     FOREIGN KEY (user_id) REFERENCES users(id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE promotions (
-  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  code VARCHAR(50) NOT NULL UNIQUE,
-  discount_type ENUM('Percentage', 'FixedAmount') NOT NULL,
-  discount_value DECIMAL(12,2) NOT NULL,
-  description TEXT NULL,
-  start_date DATETIME NULL,
-  end_date DATETIME NULL,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  CONSTRAINT chk_promotions_discount_value CHECK (discount_value >= 0)
 ) ENGINE=InnoDB;
 
 CREATE TABLE orders (
