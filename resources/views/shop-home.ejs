@@ -6,10 +6,23 @@
     <title><%= title %></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .shop-card-body > p.text-sm.text-slate-500.mt-2 {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            min-height: 2.5rem;
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
     <% const authUser = locals.authUser || null; %>
     <% const isCustomer = authUser && authUser.role === 'Customer'; %>
+    <% const shortenDescription = (value, fallback, maxLength = 88) => {
+        const text = String(value || fallback || '').trim();
+        return text.length > maxLength ? `${text.slice(0, maxLength - 3).trim()}...` : text;
+    }; %>
 
     <% if (isPreviewMode) { %>
         <div class="bg-amber-300 text-amber-950 py-2 text-center text-sm font-bold shadow-sm">
@@ -155,7 +168,11 @@
                                     </div>
                                 </a>
 
-                                <div class="p-6 flex flex-1 flex-col">
+                                <div class="shop-card-body p-6 flex flex-1 flex-col">
+                                    <% const cardDescription = shortenDescription(
+                                        part.description,
+                                        'Phá»¥ tÃ¹ng chÃ­nh hÃ£ng, sáºµn sÃ ng giao nhanh toÃ n quá»‘c.'
+                                    ); %>
                                     <p class="text-[11px] font-black uppercase tracking-[0.25em] text-blue-700 mb-2"><%= part.category %></p>
                                     <a href="/shop/product/<%= part.id %>" class="block">
                                         <h3 class="text-xl font-black text-slate-900 hover:text-blue-700 transition"><%= part.name %></h3>
