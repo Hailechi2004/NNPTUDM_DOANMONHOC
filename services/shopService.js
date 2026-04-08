@@ -29,6 +29,42 @@ async function findCustomerByUserId(userId, connection = null) {
   return rows[0] || null;
 }
 
+async function ensureCustomerByUserId(userId, connection = null) {
+  const executor = connection || pool;
+  const existingCustomer = await findCustomerByUserId(userId, connection);
+  if (existingCustomer) {
+    return existingCustomer;
+  }
+
+  const [userRows] = await executor.execute(
+    `SELECT u.id, u.full_name, u.email, r.name AS role_name
+     FROM users u
+     INNER JOIN roles r ON r.id = u.role_id
+     WHERE u.id = ?
+     LIMIT 1`,
+    [userId]
+  );
+
+  const user = userRows[0] || null;
+  if (!user || user.role_name !== 'Customer') {
+    return null;
+  }
+
+  const fullName = user.full_name || user.email || `Customer ${userId}`;
+  const [insertResult] = await executor.execute(
+    `INSERT INTO customers (user_id, full_name, phone, address, loyalty_points)
+     VALUES (?, ?, NULL, NULL, 0)`,
+    [userId, fullName]
+  );
+
+  return {
+    id: insertResult.insertId,
+    full_name: fullName,
+    phone: null,
+    address: null,
+  };
+}
+
 async function ensureCart(customerId, connection = null) {
   const executor = connection || pool;
   const [existingRows] = await executor.execute(
@@ -121,7 +157,7 @@ function calculateCartPricing(part, promotion) {
 
 async function getCartCount(userId) {
   await ensureAppSchema();
-  const customer = await findCustomerByUserId(userId);
+  const customer = await ensureCustomerByUserId(userId);
   if (!customer) {
     return 0;
   }
@@ -176,7 +212,7 @@ async function getCartDetail(authUser) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -261,7 +297,7 @@ async function addToCart(authUser, partId, quantity = 1) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -306,7 +342,7 @@ async function updateCartItem(authUser, partId, quantity) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -344,7 +380,7 @@ async function applyPromotionCode(authUser, partId, promoCode) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -385,7 +421,7 @@ async function clearPromotionCode(authUser, partId) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -403,7 +439,7 @@ async function removeCartItem(authUser, partId) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -421,7 +457,7 @@ async function checkoutCart(authUser, shippingAddress) {
   try {
     await connection.beginTransaction();
 
-    const customer = await findCustomerByUserId(authUser.id, connection);
+    const customer = await ensureCustomerByUserId(authUser.id, connection);
     if (!customer) {
       throw new Error('Không tìm thấy thông tin khách hàng');
     }
@@ -535,7 +571,7 @@ async function listCustomerOrders(authUser) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -562,7 +598,7 @@ async function findCustomerOrderDetail(authUser, orderId) {
   await ensureAppSchema();
   requireCustomer(authUser);
 
-  const customer = await findCustomerByUserId(authUser.id);
+  const customer = await ensureCustomerByUserId(authUser.id);
   if (!customer) {
     throw new Error('Không tìm thấy thông tin khách hàng');
   }
@@ -625,6 +661,7 @@ module.exports = {
   checkoutCart,
   clearPromotionCode,
   ensureCart,
+  ensureCustomerByUserId,
   findCustomerByUserId,
   findCustomerOrderDetail,
   getCartCount,

@@ -89,6 +89,8 @@ router.get('/parts', async function partsPage(req, res, next) {
       title: 'Danh sách phụ tùng',
       parts,
       filters,
+      errorMessage: req.query.error || '',
+      successMessage: req.query.success || '',
     });
   } catch (error) {
     return next(error);
@@ -214,9 +216,15 @@ router.post('/parts/edit/:id/save', uploadImage.single('imageFile'), async funct
 
 router.get('/parts/delete/:id', async function deletePart(req, res, next) {
   try {
-    await partController.deletePart(req.params.id);
-    return res.redirect('/parts');
+    const deleted = await partController.deletePart(req.params.id);
+    if (!deleted) {
+      return next(createNotFound('KhÃ´ng tÃ¬m tháº¥y phá»¥ tÃ¹ng'));
+    }
+    return res.redirect('/parts?success=Da%20xoa%20phu%20tung%20thanh%20cong');
   } catch (error) {
+    if (error.status === 409) {
+      return res.redirect(`/parts?error=${encodeURIComponent(error.message)}`);
+    }
     return next(error);
   }
 });

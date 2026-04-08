@@ -10,6 +10,18 @@
     </a>
 </div>
 
+<% if (errorMessage) { %>
+    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+        <%= errorMessage %>
+    </div>
+<% } %>
+
+<% if (successMessage) { %>
+    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+        <%= successMessage %>
+    </div>
+<% } %>
+
 <form action="/parts" method="GET" class="mb-8 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>

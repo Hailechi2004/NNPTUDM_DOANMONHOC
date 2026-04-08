@@ -231,7 +231,44 @@ async function updatePart(id, payload) {
   return findPartById(id);
 }
 
+async function getPartDeleteBlockers(id) {
+  const [orderUsage, cartUsage] = await Promise.all([
+    queryOne(
+      `SELECT COUNT(*) AS total
+       FROM order_details
+       WHERE part_id = ?`,
+      [id]
+    ),
+    queryOne(
+      `SELECT COUNT(*) AS total
+       FROM cart_items
+       WHERE part_id = ?`,
+      [id]
+    ),
+  ]);
+
+  return {
+    orderCount: Number(orderUsage ? orderUsage.total : 0),
+    cartCount: Number(cartUsage ? cartUsage.total : 0),
+  };
+}
+
 async function deletePart(id) {
+  const blockers = await getPartDeleteBlockers(id);
+  if (blockers.orderCount > 0) {
+    const error = new Error('Khong the xoa phu tung nay vi da xuat hien trong don hang. Hay giu lai de bao toan lich su giao dich.');
+    error.status = 409;
+    error.code = 'PART_IN_ORDERS';
+    throw error;
+  }
+
+  if (blockers.cartCount > 0) {
+    const error = new Error('Khong the xoa phu tung nay vi dang ton tai trong gio hang cua khach hang.');
+    error.status = 409;
+    error.code = 'PART_IN_CARTS';
+    throw error;
+  }
+
   const result = await query('DELETE FROM parts WHERE id = ?', [id]);
   return result.affectedRows > 0;
 }
@@ -260,6 +297,7 @@ module.exports = {
   deletePart,
   findPartById,
   findPromotionForPart,
+  getPartDeleteBlockers,
   getPartFormOptions,
   getPromotionState,
   listParts,

@@ -74,6 +74,9 @@ router.delete('/:id', checkLogin, checkActiveUser, checkRole('Admin', 'Staff'), 
 
     return res.status(204).send();
   } catch (error) {
+    if (error.status === 409) {
+      return sendError(res, 409, error.message);
+    }
     return next(error);
   }
 });
